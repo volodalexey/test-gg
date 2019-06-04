@@ -49,5 +49,8 @@ export default class SearchToolbar extends Vue {
       }
     });
   }
+  mounted() {
+    this.getSearchResults();
+  }
 }
 </script>
