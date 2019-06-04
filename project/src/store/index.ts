@@ -7,12 +7,18 @@ Vue.use(Vuex);
 export const store = new Vuex.Store({
   state: {
     search: "",
+    page: 1,
     pendingSearch: false,
-    searchResults: [],
+    searchResults: null,
+    favorited: [],
   },
   mutations: {
     setSearch(state, payload) {
       state.search = payload;
+      state.page = 1;
+    },
+    setPage(state, payload) {
+      state.page = payload;
     },
     setSearchPending(state, payload) {
       state.pendingSearch = payload;
@@ -22,15 +28,14 @@ export const store = new Vuex.Store({
     },
   },
   actions: {
-    async getSearchResults({ commit, state }, { title, page }) {
+    async getSearchResults({ commit, state }) {
       if (state.pendingSearch) {
         return state.pendingSearch;
       }
 
       commit("setSearchPending", true);
-      commit("setSearchResults", []);
       try {
-        const response = await searchQuery(title, page);
+        const response = await searchQuery(state.search, String(state.page));
         commit("setSearchResults", response.data);
       } catch (err) {
         console.error(err);

@@ -1,23 +1,27 @@
 <template>
-  <v-list-tile :key="item.title" avatar ripple @click="toggle(index)">
-    <v-list-tile-content>
-      <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-      <v-list-tile-sub-title class="text--primary">{{ item.headline }}</v-list-tile-sub-title>
-      <v-list-tile-sub-title>{{ item.subtitle }}</v-list-tile-sub-title>
-    </v-list-tile-content>
-
-    <v-list-tile-action>
-      <v-list-tile-action-text>{{ item.action }}</v-list-tile-action-text>
-      <v-icon v-if="selected.indexOf(index) < 0" color="grey lighten-1">star_border</v-icon>
-
-      <v-icon v-else color="yellow darken-2">star</v-icon>
-    </v-list-tile-action>
-  </v-list-tile>
+  <v-flex xs4>
+    <v-card color="blue-grey darken-2" class="white--text">
+      <v-card-title primary-title>
+        <div>
+          <div class="headline">Title: {{ movie.Title }}</div>
+          <span>Year: {{ movie.Year }}</span>
+          <span>IMDB: {{ movie.imdbID }}</span>
+        </div>
+      </v-card-title>
+      <v-card-actions>
+        <v-btn flat dark>Listen now</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-flex>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Prop } from "vue-property-decorator";
+import { MovieT } from "../model";
 
 @Component({})
-export default class ListItem extends Vue {}
+export default class ListItem extends Vue {
+  @Prop(Object) readonly movie!: MovieT;
+  toggle() {}
+}
 </script>

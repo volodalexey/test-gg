@@ -8,11 +8,18 @@
           <v-spacer></v-spacer>
 
           <form class="layout row" @submit.prevent="handleSubmit">
-            <v-text-field :value="search" @input="handleInput($event)" label="Search"></v-text-field>
+            <v-text-field
+              :value="search"
+              :disabled="pendingSearch"
+              @input="handleInput($event)"
+              label="Search"
+            ></v-text-field>
           </form>
         </v-toolbar>
       </v-card>
     </v-flex>
+
+    <v-snackbar v-model="snackbar">No result found for {{search}} !</v-snackbar>
   </v-layout>
 </template>
 
@@ -21,9 +28,14 @@ import { State, Mutation, Action } from "vuex-class";
 
 import { Component, Vue } from "vue-property-decorator";
 
+import { SearchResultT } from "../model";
+
 @Component
 export default class SearchToolbar extends Vue {
+  snackbar: boolean = false;
   @State("search") search!: string;
+  @State("pendingSearch") pendingSearch!: boolean;
+  @State("searchResults") searchResults!: SearchResultT;
   @Mutation("setSearch") setSearch!: Function;
   @Action("getSearchResults") getSearchResults!: Function;
 
@@ -31,7 +43,11 @@ export default class SearchToolbar extends Vue {
     this.setSearch(value);
   }
   handleSubmit() {
-    this.getSearchResults({ title: this.search, page: 1 });
+    this.getSearchResults().then(() => {
+      if (!this.searchResults.data.length) {
+        this.snackbar = true;
+      }
+    });
   }
 }
 </script>
